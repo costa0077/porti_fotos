@@ -196,11 +196,12 @@ nav ul li a:hover {
   width: 100%;
   display: block;
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: transform 0.3s ease;
 }
 
+/* Efeito de "subida" ao passar o mouse */
 .gallery-item img:hover {
-  transform: scale(1.05);
+  transform: translateY(-5px);
 }
 
 /* Responsividade da Galeria */
@@ -215,8 +216,6 @@ nav ul li a:hover {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-
-
 
 /* Lightbox Modal */
 .lightbox-modal {

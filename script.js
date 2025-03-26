@@ -34,10 +34,40 @@ prevButton.addEventListener('click', prevGroup);
 // Auto avançar o carrossel a cada 5 segundos
 setInterval(nextGroup, 5000);
 
-// Simulação de envio do formulário de contato
-const contactForm = document.getElementById('contact-form');
-contactForm.addEventListener('submit', function(e) {
-  e.preventDefault();
-  alert('Mensagem enviada! Em breve entraremos em contato.');
-  contactForm.reset();
+// Remova ou comente a simulação do formulário de contato, 
+// pois não há elemento com id "contact-form" no HTML.
+// const contactForm = document.getElementById('contact-form');
+// if (contactForm) {
+//   contactForm.addEventListener('submit', function(e) {
+//     e.preventDefault();
+//     alert('Mensagem enviada! Em breve entraremos em contato.');
+//     contactForm.reset();
+//   });
+// }
+
+// Seleciona todas as imagens da galeria
+const galleryImages = document.querySelectorAll('.gallery-item img');
+// Seleciona o modal, a imagem grande e o botão de fechar
+const lightboxModal = document.getElementById('lightbox-modal');
+const lightboxImage = document.getElementById('lightbox-image');
+const lightboxClose = document.querySelector('.lightbox-close');
+
+// Abre o modal ao clicar na imagem
+galleryImages.forEach(img => {
+  img.addEventListener('click', () => {
+    lightboxModal.style.display = 'block';
+    lightboxImage.src = img.src; // coloca a mesma imagem no modal
+  });
+});
+
+// Fecha o modal ao clicar no X
+lightboxClose.addEventListener('click', () => {
+  lightboxModal.style.display = 'none';
+});
+
+// (Opcional) Fecha o modal ao clicar fora da imagem
+lightboxModal.addEventListener('click', (e) => {
+  if (e.target === lightboxModal) {
+    lightboxModal.style.display = 'none';
+  }
 });
