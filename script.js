@@ -34,40 +34,64 @@ prevButton.addEventListener('click', prevGroup);
 // Auto avançar o carrossel a cada 5 segundos
 setInterval(nextGroup, 5000);
 
-// Remova ou comente a simulação do formulário de contato, 
-// pois não há elemento com id "contact-form" no HTML.
-// const contactForm = document.getElementById('contact-form');
-// if (contactForm) {
-//   contactForm.addEventListener('submit', function(e) {
-//     e.preventDefault();
-//     alert('Mensagem enviada! Em breve entraremos em contato.');
-//     contactForm.reset();
-//   });
-// }
-
-// Seleciona todas as imagens da galeria
-const galleryImages = document.querySelectorAll('.gallery-item img');
-// Seleciona o modal, a imagem grande e o botão de fechar
+// Seleciona elementos do modal de Lightbox
 const lightboxModal = document.getElementById('lightbox-modal');
 const lightboxImage = document.getElementById('lightbox-image');
 const lightboxClose = document.querySelector('.lightbox-close');
 
-// Abre o modal ao clicar na imagem
-galleryImages.forEach(img => {
-  img.addEventListener('click', () => {
-    lightboxModal.style.display = 'block';
-    lightboxImage.src = img.src; // coloca a mesma imagem no modal
+// Função para adicionar evento de lightbox às imagens da galeria
+function addLightboxEvent() {
+  const galleryImages = document.querySelectorAll('.gallery-item img');
+  galleryImages.forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxModal.style.display = 'block';
+      lightboxImage.src = img.src;
+    });
   });
-});
+}
 
-// Fecha o modal ao clicar no X
+// Função para embaralhar um array (algoritmo Fisher-Yates)
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+// Carrega as imagens dinamicamente na galeria via JSON
+fetch('images.json')
+  .then(response => response.json())
+  .then(data => {
+    const galleryGrid = document.querySelector('.gallery-grid');
+    // Embaralha as imagens antes de inseri-las na galeria
+    const shuffledImages = shuffle(data.images);
+    shuffledImages.forEach((image, index) => {
+      const div = document.createElement('div');
+      div.classList.add('gallery-item');
+
+      const img = document.createElement('img');
+      img.src = 'public/galery_photos/' + image;
+      img.alt = 'Foto ' + (index + 1);
+      img.loading = 'lazy';
+
+      div.appendChild(img);
+      galleryGrid.appendChild(div);
+    });
+    // Após carregar as imagens, adiciona os eventos da lightbox
+    addLightboxEvent();
+  })
+  .catch(error => console.error('Erro ao carregar as imagens:', error));
+
+// Fecha o modal ao clicar no botão de fechar
 lightboxClose.addEventListener('click', () => {
   lightboxModal.style.display = 'none';
 });
 
-// (Opcional) Fecha o modal ao clicar fora da imagem
+// Fecha o modal ao clicar fora da imagem
 lightboxModal.addEventListener('click', (e) => {
   if (e.target === lightboxModal) {
     lightboxModal.style.display = 'none';
   }
 });
+    
