@@ -10,75 +10,52 @@ const groups      = document.querySelectorAll('.carousel-group');
 const totalGroups = groups.length;
 let groupIndex    = 0;
 
-function showGroup(index) {
+function showGroup(i) {
   document.querySelector('.carousel-groups')
-    .style.transform = `translateX(${-index * 100}%)`;
+    .style.transform = `translateX(${-i * 100}%)`;
 }
-
 function nextGroup() {
   groupIndex = (groupIndex + 1) % totalGroups;
   showGroup(groupIndex);
 }
-
 function prevGroup() {
   groupIndex = (groupIndex - 1 + totalGroups) % totalGroups;
   showGroup(groupIndex);
 }
-
 document.getElementById('next').addEventListener('click', nextGroup);
 document.getElementById('prev').addEventListener('click', prevGroup);
-setInterval(nextGroup, 5000); // auto avança a cada 5s
+setInterval(nextGroup, 5000);
 
-// Lightbox Modal
+// Lightbox Modal (listener único por delegação)
 const lightboxModal = document.getElementById('lightbox-modal');
 const lightboxImage = document.getElementById('lightbox-image');
 const lightboxClose = document.querySelector('.lightbox-close');
 
-// Fecha o modal ao clicar no "×" ou fora da imagem
+// abre ao clicar numa IMG dentro de .gallery-grid
+document.querySelector('.gallery-grid').addEventListener('click', e => {
+  if (e.target.tagName === 'IMG' && e.target.closest('.gallery-item')) {
+    lightboxImage.src = e.target.src;
+    lightboxModal.style.display = 'block';
+  }
+});
+// fecha ao clicar no × ou fora da imagem
 lightboxClose.addEventListener('click', () => lightboxModal.style.display = 'none');
 lightboxModal.addEventListener('click', e => {
   if (e.target === lightboxModal) lightboxModal.style.display = 'none';
 });
 
-// Único listener para expandir qualquer imagem da galeria
-document.querySelector('.gallery-grid').addEventListener('click', e => {
-  // se clicou em IMG dentro de .gallery-item
-  if (e.target && e.target.tagName === 'IMG' && e.target.closest('.gallery-item')) {
-    lightboxImage.src = e.target.src;
-    lightboxModal.style.display = 'block';
-  }
+// Animação e destaque das imagens já presentes em HTML
+document.querySelectorAll('.gallery-item').forEach((div, i) => {
+  // destaca as 3 primeiras
+  if (i < 3) div.classList.add('featured');
+
+  // estado inicial para o fade-in
+  div.style.opacity   = '0';
+  div.style.transform = 'translateY(20px)';
+
+  setTimeout(() => {
+    div.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    div.style.opacity    = '1';
+    div.style.transform  = 'translateY(0)';
+  }, i * 150);
 });
-
-// Carrega as imagens dinamicamente na galeria com destaques e animação
-fetch('images.json')
-  .then(res => {
-    if (!res.ok) throw new Error('JSON não encontrado');
-    return res.json();
-  })
-  .then(data => {
-    const galleryGrid = document.querySelector('.gallery-grid');
-    data.images.forEach((image, i) => {
-      const div = document.createElement('div');
-      div.classList.add('gallery-item');
-      if (i < 3) div.classList.add('featured');
-
-      const img = document.createElement('img');
-      img.src     = `public/galery_photos/${image}`;
-      img.alt     = `Foto ${i + 1}`;
-      img.loading = 'lazy';
-      div.appendChild(img);
-
-      // animação inicial
-      div.style.opacity   = '0';
-      div.style.transform = 'translateY(20px)';
-      galleryGrid.appendChild(div);
-
-      // fade-in sequencial
-      setTimeout(() => {
-        div.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        div.style.opacity    = '1';
-        div.style.transform  = 'translateY(0)';
-      }, i * 150);
-    });
-  })
-  .catch(err => console.error('Erro ao carregar as imagens:', err));

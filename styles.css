@@ -74,7 +74,7 @@ nav ul li a:hover {
 
 /* Seção Hero */
 .hero {
-  background: url('https://via.placeholder.com/1200x600') no-repeat center center/cover;
+  background: url('1200x600') …;
   height: 600px;
   display: flex;
   align-items: center;
