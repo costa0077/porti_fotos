@@ -299,3 +299,33 @@ nav ul li a:hover {
     display: block;
   }
 }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* itens gerais */
+.gallery-item {
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* destaque para as 3 primeiras */
+.gallery-item.featured {
+  grid-column: span 2;
+  grid-row: span 2;
+  border: 3px solid var(--primary);
+}
+
+/* imagem com hover zoom */
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform .5s ease;
+}
+.gallery-item img:hover {
+  transform: scale(1.05);
+}
